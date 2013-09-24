@@ -1,15 +1,17 @@
 package be.esi.alg2.arbre.gui;
 
+import be.esi.alg2.arbre.metier.ArbreMetierException;
 import be.esi.alg2.arbre.mvc.ArbreModificationListener;
 import be.esi.alg2.arbre.mvc.ArbreSelectionListener;
 import be.esi.alg2.arbre.mvc.Modele;
 import be.esi.alg2.arbre.mvc.NoeudBinaire;
 import be.esi.alg2.arbre.mvc.Valeur;
 import java.awt.BorderLayout;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -17,7 +19,7 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author Florian
  */
-public class ParcourInfixe extends javax.swing.JDialog implements ArbreModificationListener, 
+public class GDR extends javax.swing.JDialog implements ArbreModificationListener, 
         ArbreSelectionListener  {
 
     private Modele modele;
@@ -26,13 +28,13 @@ public class ParcourInfixe extends javax.swing.JDialog implements ArbreModificat
     private JScrollPane listScrollPane;
 
     /**
-     * Creates new form ParcourInfixe
+     * Creates new form ParcoursInfixe
      */
-    public ParcourInfixe(java.awt.Frame parent, boolean modal) {
+    public GDR(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
 
-        listModel = new DefaultListModel<Valeur>();
+        listModel = new DefaultListModel<>();
         list = new JList();
 
         list.addListSelectionListener(new ListSelectionListener() {
@@ -42,6 +44,7 @@ public class ParcourInfixe extends javax.swing.JDialog implements ArbreModificat
                 System.out.println(list.getSelectedIndex());
             }
         });
+        
         
         //NoeudBinaire nb = (NoeudBinaire) listModel.get(list.getSelectedIndex());
     }
@@ -91,20 +94,20 @@ public class ParcourInfixe extends javax.swing.JDialog implements ArbreModificat
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ParcourInfixe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GDR.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ParcourInfixe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GDR.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ParcourInfixe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GDR.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ParcourInfixe.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GDR.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ParcourInfixe dialog = new ParcourInfixe(new javax.swing.JFrame(), true);
+                GDR dialog = new GDR(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -131,28 +134,34 @@ public class ParcourInfixe extends javax.swing.JDialog implements ArbreModificat
     }
 
     private void setList() {
-        if (listScrollPane != null) {
-            remove(listScrollPane);
+        try {
+            /*if (listScrollPane != null) {
+                remove(listScrollPane);
+            }
+
+            listModel.clear();
+
+            for (NoeudBinaire bin : modele.getGRD()) {
+                listModel.addElement(bin.getVal());
+
+            }
+
+            list = new JList(listModel);
+
+            list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            list.setLayoutOrientation(JList.VERTICAL_WRAP);
+
+            listScrollPane = new JScrollPane(list);
+
+            add(listScrollPane, BorderLayout.CENTER);
+
+            validate();
+
+            pack();*/
+            
+            add(new ParcoursGen(modele, "GDR"), BorderLayout.CENTER);
+        } catch (NoSuchMethodException | ClassNotFoundException | ArbreMetierException ex) {
+            Logger.getLogger(GDR.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        listModel.clear();
-
-        for (NoeudBinaire bin : modele.getGRD()) {
-            listModel.addElement(bin.getVal());
-
-        }
-
-        list = new JList(listModel);
-
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setLayoutOrientation(JList.VERTICAL_WRAP);
-
-        listScrollPane = new JScrollPane(list);
-
-        add(listScrollPane, BorderLayout.CENTER);
-
-        validate();
-
-        pack();
     }
 }

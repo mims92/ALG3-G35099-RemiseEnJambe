@@ -23,8 +23,8 @@ public class ModeleImplementation implements Modele {
     private List<NoeudBinaire> list;
             
     public ModeleImplementation() {
-        arbreModlisteners = new ArrayList<ArbreModificationListener>();
-        arbreSellisteners = new ArrayList<ArbreSelectionListener>();
+        arbreModlisteners = new ArrayList<>();
+        arbreSellisteners = new ArrayList<>();
         arbre = new ArbreBinaireImplementation();
     }
 
@@ -36,7 +36,7 @@ public class ModeleImplementation implements Modele {
      */
     @Override
     public List<NoeudBinaire> getGRD() {
-        this.list = new ArrayList<NoeudBinaire>();
+        this.list = new ArrayList<>();
         
         parcourInfixe(this.arbre.getRacine());
         return list;

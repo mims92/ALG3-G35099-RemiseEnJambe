@@ -1,9 +1,8 @@
 package be.esi.alg2.arbre.lancement;
 
 import be.esi.alg2.arbre.db.ArbreDbException;
-import be.esi.alg2.arbre.dto.ArbreCompletDto;
 import be.esi.alg2.arbre.gui.AddNoeud;
-import be.esi.alg2.arbre.gui.ParcourInfixe;
+import be.esi.alg2.arbre.gui.GDR;
 import be.esi.alg2.arbre.gui.JDRechercheArbre;
 import be.esi.alg2.arbre.gui.JPRechercheArbre;
 import be.esi.alg2.arbre.gui.MaJTableArbre;
@@ -28,7 +27,7 @@ public class Accueil extends javax.swing.JFrame implements ArbreModificationList
     private AddNoeud addNoeud;
     private JDRechercheArbre loadArbe;
     private NoeudSel noeudSel;
-    private ParcourInfixe parcourInfixe;
+    private GDR parcourInfixe;
 
     /**
      * Creates new form Accueil
@@ -248,7 +247,7 @@ public class Accueil extends javax.swing.JFrame implements ArbreModificationList
 
     private void jMenuGRDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuGRDActionPerformed
 	if (this.parcourInfixe == null) {            
-            this.parcourInfixe = new ParcourInfixe(this, false);
+            this.parcourInfixe = new GDR(this, false);
             
             this.parcourInfixe.setModele(modele);
             
