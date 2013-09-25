@@ -19,8 +19,6 @@ public class ModeleImplementation implements Modele {
     private NoeudBinaire sel;
     private List<ArbreModificationListener> arbreModlisteners;  //écouteurs des modifications de l'arbre
     private List<ArbreSelectionListener> arbreSellisteners;     //écouteurs des sélections de noeud de l'arbre
-
-    private List<NoeudBinaire> list;
             
     public ModeleImplementation() {
         arbreModlisteners = new ArrayList<>();
@@ -36,17 +34,17 @@ public class ModeleImplementation implements Modele {
      */
     @Override
     public List<NoeudBinaire> getGRD() {
-        this.list = new ArrayList<>();
+        ArrayList<NoeudBinaire> liste = new ArrayList<>();
         
-        parcourInfixe(this.arbre.getRacine());
-        return list;
+        parcourInfixe(liste, this.arbre.getRacine());
+        return liste;
     }
     
-    private void parcourInfixe(NoeudBinaire nb) {
+    private void parcourInfixe(ArrayList<NoeudBinaire> liste, NoeudBinaire nb) {
         if (nb != null) {
-            parcourInfixe(nb.getGauche());
-            this.list.add(nb);
-            parcourInfixe(nb.getDroite());
+            parcourInfixe(liste, nb.getGauche());
+            liste.add(nb);
+            parcourInfixe(liste, nb.getDroite());
         }
     }
 
@@ -58,9 +56,20 @@ public class ModeleImplementation implements Modele {
      */
     @Override
     public List<NoeudBinaire> getRGD() {
-        throw new UnsupportedOperationException("Not supported yetRGD.");
+        ArrayList<NoeudBinaire> liste = new ArrayList<>();
+        
+        parcoursPrefixe(liste, this.arbre.getRacine());
+        return liste;
     }
 
+    private void parcoursPrefixe(ArrayList<NoeudBinaire> liste, NoeudBinaire nb) {
+        if (nb != null) {
+            liste.add(nb);
+            parcourInfixe(liste, nb.getGauche());
+            parcourInfixe(liste, nb.getDroite());
+        }
+    }
+    
     /**
      * retourne la liste des noeuds de l'arbre dans l'ordre postfixé.
      *
@@ -69,7 +78,18 @@ public class ModeleImplementation implements Modele {
      */
     @Override
     public List<NoeudBinaire> getGDR() {
-        throw new UnsupportedOperationException("Not supported yetGDR.");
+        ArrayList<NoeudBinaire> liste = new ArrayList<>();
+        
+        parcoursPostfixe(liste, this.arbre.getRacine());
+        return liste;
+    }
+    
+    private void parcoursPostfixe(ArrayList<NoeudBinaire> liste, NoeudBinaire nb) {
+        if (nb != null) {
+            parcourInfixe(liste, nb.getGauche());
+            parcourInfixe(liste, nb.getDroite());
+            liste.add(nb);
+        }
     }
 
     /**
@@ -150,8 +170,10 @@ public class ModeleImplementation implements Modele {
      */
     @Override
     public void setSel(NoeudBinaire sel) {
-        this.sel = sel;
-        refresh();
+        if (sel != this.sel) {
+            this.sel = sel;
+            refresh();
+        }
     }
 
     @Override

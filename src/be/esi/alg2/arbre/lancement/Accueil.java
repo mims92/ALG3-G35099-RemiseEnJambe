@@ -1,16 +1,22 @@
 package be.esi.alg2.arbre.lancement;
 
 import be.esi.alg2.arbre.db.ArbreDbException;
+import be.esi.alg2.arbre.dto.ArbreCompletDto;
 import be.esi.alg2.arbre.gui.AddNoeud;
-import be.esi.alg2.arbre.gui.GDR;
+import be.esi.alg2.arbre.gui.ParcoursInfixe;
 import be.esi.alg2.arbre.gui.JDRechercheArbre;
 import be.esi.alg2.arbre.gui.JPRechercheArbre;
 import be.esi.alg2.arbre.gui.MaJTableArbre;
 import be.esi.alg2.arbre.gui.NoeudSel;
+import be.esi.alg2.arbre.gui.Parcours;
+import be.esi.alg2.arbre.gui.ParcoursPostfixe;
+import be.esi.alg2.arbre.gui.ParcoursPrefixe;
 import be.esi.alg2.arbre.metier.ArbreBinaireFacade;
 import be.esi.alg2.arbre.mvc.ArbreModificationListener;
 import be.esi.alg2.arbre.mvc.Modele;
 import be.esi.alg2.arbre.mvc.NoeudBinaire;
+import be.esi.alg2.arbre.mvc.ProfondeurMaximaleAtteinteException;
+import be.esi.alg2.arbre.mvc.Valeur;
 import be.esi.alg2.gui.outils.MaJTableInitialisationException;
 import be.esi.alg2.visuarbre.VisuArbre;
 import flo.utils.panel.MsgOutil;
@@ -27,7 +33,9 @@ public class Accueil extends javax.swing.JFrame implements ArbreModificationList
     private AddNoeud addNoeud;
     private JDRechercheArbre loadArbe;
     private NoeudSel noeudSel;
-    private GDR parcourInfixe;
+    private Parcours parcourInfixe;
+    private Parcours parcourPostfixe;
+    private Parcours parcoursPrefixe;
 
     /**
      * Creates new form Accueil
@@ -66,17 +74,17 @@ public class Accueil extends javax.swing.JFrame implements ArbreModificationList
 
         //Notifie les vues qu'un nouvel arbre a été chargé
         /*loadArbe.addPropertyChangeListener(MaJTableArbre.PROPERTY_EVENT_SELECT, new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                try {
-                    ArbreCompletDto aDto = ArbreBinaireFacade.chargeArbre(evt.getNewValue().toString());
+         @Override
+         public void propertyChange(PropertyChangeEvent evt) {
+         try {
+         ArbreCompletDto aDto = ArbreBinaireFacade.chargeArbre(evt.getNewValue().toString());
 
-                } catch (ArbreDbException ex) {
-                    MsgOutil.showErreur("Impossible de charger l'arbre", "Exception : "
-                            + ex.getMessage());
-                }
-            }
-        });*/
+         } catch (ArbreDbException ex) {
+         MsgOutil.showErreur("Impossible de charger l'arbre", "Exception : "
+         + ex.getMessage());
+         }
+         }
+         });*/
     }
 
     /**
@@ -246,17 +254,17 @@ public class Accueil extends javax.swing.JFrame implements ArbreModificationList
     }//GEN-LAST:event_jMVoirActionPerformed
 
     private void jMenuGRDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuGRDActionPerformed
-	if (this.parcourInfixe == null) {            
-            this.parcourInfixe = new GDR(this, false);
-            
+        if (this.parcourInfixe == null) {
+            this.parcourInfixe = new ParcoursInfixe();
+
             this.parcourInfixe.setModele(modele);
-            
+
             modele.addModificationListener(this.parcourInfixe);
             modele.addSelectionListener(this.parcourInfixe);
-            
+
             this.parcourInfixe.notifyModArbre();
             this.parcourInfixe.notifyNewSelection(modele.getSel());
-            
+
             this.parcourInfixe.setVisible(true);
         } else {
             this.parcourInfixe.setVisible(true);
@@ -264,15 +272,42 @@ public class Accueil extends javax.swing.JFrame implements ArbreModificationList
     }//GEN-LAST:event_jMenuGRDActionPerformed
 
     private void jMenuRGDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuRGDActionPerformed
-	
+        if (this.parcoursPrefixe == null) {
+            this.parcoursPrefixe = new ParcoursPrefixe();
+
+            this.parcoursPrefixe.setModele(modele);
+
+            modele.addModificationListener(this.parcoursPrefixe);
+            modele.addSelectionListener(this.parcoursPrefixe);
+
+            this.parcoursPrefixe.notifyModArbre();
+            this.parcoursPrefixe.notifyNewSelection(modele.getSel());
+
+            this.parcoursPrefixe.setVisible(true);
+        } else {
+            this.parcoursPrefixe.setVisible(true);
+        }
     }//GEN-LAST:event_jMenuRGDActionPerformed
 
     private void jMenuGDRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuGDRActionPerformed
-	
+        if (this.parcourPostfixe == null) {
+            this.parcourPostfixe = new ParcoursPostfixe();
+
+            this.parcourPostfixe.setModele(modele);
+
+            modele.addModificationListener(this.parcourPostfixe);
+            modele.addSelectionListener(this.parcourPostfixe);
+
+            this.parcourPostfixe.notifyModArbre();
+            this.parcourPostfixe.notifyNewSelection(modele.getSel());
+
+            this.parcourPostfixe.setVisible(true);
+        } else {
+            this.parcourPostfixe.setVisible(true);
+        }
     }//GEN-LAST:event_jMenuGDRActionPerformed
 
     private void jMNouveauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMNouveauActionPerformed
-	
     }//GEN-LAST:event_jMNouveauActionPerformed
 
     private void jMSauveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMSauveActionPerformed
@@ -295,6 +330,25 @@ public class Accueil extends javax.swing.JFrame implements ArbreModificationList
             if (this.loadArbe == null) {
                 this.loadArbe = new JDRechercheArbre(null, true, "Sélection d'arbres", new JPRechercheArbre(), new MaJTableArbre());
                 this.loadArbe.setVisible(true);
+                
+                loadArbe.addPropertyChangeListener(MaJTableArbre.PROPERTY_EVENT_SELECT, new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        try {
+                            ArbreCompletDto aDto = ArbreBinaireFacade.chargeArbre(evt.getNewValue().toString());
+                            modele.nouvelArbre();
+                            
+                            for (Valeur val : aDto.getListe()) {
+                                modele.addValeur(val);
+                            }
+                            
+                        } catch (ArbreDbException | ProfondeurMaximaleAtteinteException ex) {
+                            MsgOutil.showErreur("Impossible de charger l'arbre", "Exception : "
+                                    + ex.getMessage());
+                        } 
+                    }
+                });
+                
             } else {
                 this.loadArbe.setVisible(true);
             }
